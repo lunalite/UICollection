@@ -1,0 +1,2 @@
+uiautomator==0.3.2
+urllib3==1.22
