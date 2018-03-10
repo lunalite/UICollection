@@ -410,12 +410,12 @@ def official(_apkdir):
                         logger.info("Socket timeout. Restarting...")
                     elif retvalue == APP_STATE.KEYBOARDINT:
                         logger.info("keyboard interrupt. Restarting...")
-                # except BaseException as e:
-                #     if re.match('timeout', str(e), re.IGNORECASE):
-                #         logger.info("Timeout from nothing happening. Restarting... ")
-                #     else:
-                #         logger.info("Unknown exception." + str(e))
-                        # raise Exception(e)
+                except BaseException as e:
+                    if re.match('timeout', str(e), re.IGNORECASE):
+                        logger.info("Timeout from nothing happening. Restarting... ")
+                    else:
+                        logger.info("Unknown exception." + str(e))
+                        raise Exception(e)
                 finally:
                     signal.alarm(0)
                     attempts += 1
