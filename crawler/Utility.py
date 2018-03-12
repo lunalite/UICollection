@@ -140,56 +140,9 @@ def get_package_name(d):
     return info['currentPackageName']
 
 
-def get_activity_name(d, pn, device_name):
-    # android_home = Config.android_home
-    #    try:
-    # ps = subprocess.Popen([android_home + 'platform-tools/adb', '-s', device_name, 'shell', 'dumpsys'],
-    #                       stdout=subprocess.PIPE)
-    # result = subprocess.check_output(['grep', 'mFocusedApp'], stdin=ps.stdout)
-    # a = result.decode()
-    # m = re.findall(pn + r'.*(\b.+\b)\s\w\d+\}\}', a)
-    # return m[0]
-    #    except Exception:
-    #        logger.info("Timeout trying to catch mFocused")
-    return "UNKActivity"
-
-
-def get_class_dict(d, fi):
-    x = d.dump(compressed=False)
-    root = ET.fromstring(x)
-    arr = []
-
-    try:
-        with open(fi) as f:
-            content = json.load(f)
-        dict = content
-    except FileNotFoundError:
-        dict = {}
-
-    if dict:
-        ind = max(dict.items(), key=operator.itemgetter(1))[1]
-        ind += 1
-    else:
-        ind = 0
-    for i in root.iter():
-        if 'class' in i.attrib:
-            if i.attrib['class'] not in dict:
-                dict[i.attrib['class']] = ind
-                ind += 1
-
-    with open(fi, 'w') as f:
-        json.dump(dict, f)
-
-
 def get_text():
     # TODO: Improve the way text is chosen
     return ''.join(random.choices(string.ascii_lowercase + string.ascii_uppercase + string.digits, k=10))
-
-
-def merge_dicts(d1, d2):
-    for k, v in d2.items():
-        if k not in d1:
-            d1[k] = v
 
 
 def dump_log(d, packname, state):

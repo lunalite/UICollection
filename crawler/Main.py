@@ -9,7 +9,7 @@ import subprocess
 import time
 import os
 import sys
-
+import argparse
 import uiautomator
 
 from uiautomator import Device
@@ -18,8 +18,22 @@ from crawler.Config import Config
 from crawler import Utility
 from enum import Enum
 
-log_location = Config.log_location
+parser = argparse.ArgumentParser()
+parser.add_argument('device_name', metavar='D',
+                    help='The name of the Android device. By default, it will be emulator-5554 for a single instance, '
+                         'and 5554 + 2i for subsequent instances.')
+parser.add_argument('apklist', help='The list of apk packages.')
+parser.add_argument('apk_dir', help='The directory where all apks are stored.')
+parser.add_argument('avdname', help='Name of the AVD.')
+parser.add_argument('--window',help='If true, opens up the emulator window. Otherwise, a windowless emulator.')
+args = parser.parse_args()
 
+if args.window is None:
+    window_opt = False
+else:
+    window_opt = True
+
+log_location = Config.log_location
 os.makedirs(os.path.dirname(log_location), exist_ok=True)
 logging.basicConfig(filename=log_location + 'main-' + sys.argv[1] + '.log', level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -39,6 +53,7 @@ zero_counter = 0
 horizontal_counter = 0
 no_clickable_btns_counter = 0
 android_home = Config.android_home
+
 
 def signal_handler(signum, frame):
     logger.info("timeout call...")
@@ -441,7 +456,7 @@ def official(_apkdir):
             logger.info('Restarting emulator...')
             Utility.stop_emulator(device_name)
             time.sleep(10)
-            Utility.start_emulator(avdname, device_name)
+            Utility.start_emulator(avdname, device_name, window_sel=window_opt)
 
             logger.info('==========================================')
             new_time = datetime.now()
@@ -458,13 +473,13 @@ try:
     avdname e.g, avd0
     e.g. python3 Main.py emulator-5554 ../apk/apk-0 avd0
     """
-    device_name = sys.argv[1]
-    apklist = sys.argv[2]
-    apkdir = sys.argv[3]
-    avdname = sys.argv[4]
+    device_name = args.device_name
+    apklist = args.apklist
+    apkdir = args.apk_dir
+    avdname = args.avdname
     d = Device(device_name)
 
-    Utility.start_emulator(avdname, device_name, window_sel=True)
+    Utility.start_emulator(avdname, device_name, window_sel=window_opt)
     official(_apkdir=apkdir)
 
 except Exception as e:
