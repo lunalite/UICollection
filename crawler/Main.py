@@ -35,7 +35,7 @@ else:
 
 log_location = Config.log_location
 os.makedirs(os.path.dirname(log_location), exist_ok=True)
-logging.basicConfig(filename=log_location + 'main-' + sys.argv[1] + '.log', level=logging.DEBUG)
+logging.basicConfig(filename=log_location + 'main-' + args.device_name + '.log', level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 logging.getLogger().addHandler(logging.StreamHandler())
 logging.info('================Begin logging==================')
