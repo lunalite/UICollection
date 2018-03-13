@@ -25,13 +25,8 @@ parser.add_argument('device_name', metavar='D',
 parser.add_argument('apklist', help='The list of apk packages.')
 parser.add_argument('apk_dir', help='The directory where all apks are stored.')
 parser.add_argument('avdname', help='Name of the AVD.')
-parser.add_argument('--window',help='If true, opens up the emulator window. Otherwise, a windowless emulator.')
+parser.add_argument('--window', "-w", action="store_true", help='If true, opens up the emulator window. Otherwise, a windowless emulator.')
 args = parser.parse_args()
-
-if args.window is None:
-    window_opt = False
-else:
-    window_opt = True
 
 log_location = Config.log_location
 os.makedirs(os.path.dirname(log_location), exist_ok=True)
@@ -456,7 +451,7 @@ def official(_apkdir):
             logger.info('Restarting emulator...')
             Utility.stop_emulator(device_name)
             time.sleep(10)
-            Utility.start_emulator(avdname, device_name, window_sel=window_opt)
+            Utility.start_emulator(avdname, device_name, window_sel=args.window)
 
             logger.info('==========================================')
             new_time = datetime.now()
@@ -479,7 +474,7 @@ try:
     avdname = args.avdname
     d = Device(device_name)
 
-    Utility.start_emulator(avdname, device_name, window_sel=window_opt)
+    Utility.start_emulator(avdname, device_name, window_sel=args.window)
     official(_apkdir=apkdir)
 
 except Exception as e:
